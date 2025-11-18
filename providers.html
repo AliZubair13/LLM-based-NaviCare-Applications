@@ -6,9 +6,9 @@
   <title>NaviCare • Providers</title>
 
   <!-- Shared styles -->
-  <link rel="stylesheet" href="../css/base.css" />
-  <link rel="stylesheet" href="../css/layout.css" />
-  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/layout.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -97,38 +97,17 @@
   </footer>
 
   <!-- Shared scripts first -->
-  <script src="../js/app.js"></script>
-  <script src="../js/state.js?v=1"></script>
-  <script src="../js/mock-data.js?v=1"></script>
-  <script src="../js/api-service.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/state.js?v=1"></script>
+  <script src="assets/js/mock-data.js?v=1"></script>
   <!-- Optional helper renderer if you created it earlier -->
-  <script src="../js/ui.js?v=1"></script>
+  <script src="assets/js/ui.js?v=1"></script>
 
   <!-- Page logic -->
   <script>
-    // Load providers from API or journey state
+    // Prefer journey providers if user completed intake; else use mock list
     const JOURNEY_LIST = (window.NC && NC.state && NC.state.results && NC.state.results.doctors) || null;
-    let BASE_LIST = JOURNEY_LIST || MOCK_DOCTORS;
-
-    // Load providers from API if no journey state
-    if (!JOURNEY_LIST) {
-      loadProvidersFromAPI();
-    }
-
-    async function loadProvidersFromAPI() {
-      try {
-        const providers = await APIService.getProviders();
-        BASE_LIST = providers;
-        render(BASE_LIST);
-        updateCount();
-      } catch (error) {
-        console.error('Error loading providers from API:', error);
-        // Keep using MOCK_DOCTORS as fallback
-        BASE_LIST = MOCK_DOCTORS;
-        render(BASE_LIST);
-        updateCount();
-      }
-    }
+    const BASE_LIST = JOURNEY_LIST || (typeof MOCK_DOCTORS !== 'undefined' ? MOCK_DOCTORS : []);
 
     const elResults = document.getElementById('provider-results');
     const elCount   = document.getElementById('count');
